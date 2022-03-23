@@ -49,8 +49,6 @@ class SearchProblem:
         util.raiseNotDefined()
 
 
-
-
 def depth_first_search(problem):
     """
     Search the deepest nodes in the search tree first.
@@ -66,8 +64,20 @@ def depth_first_search(problem):
     print("Start's successors:", problem.get_successors(problem.get_start_state()))
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
-
+    fringe = util.Stack()
+    fringe.push(problem.get_start_state())
+    closed = set()
+    actions = list()
+    while not fringe.isEmpty():
+        curr = fringe.pop()
+        if problem.is_goal_state(curr):
+            return actions
+        if curr not in closed:
+            successors = problem.get_successors(curr)
+            for successor in successors:
+                fringe.push(successor[0])
+                actions.append(successor[1])
+            closed.add(curr)
 
 def breadth_first_search(problem):
     """
@@ -101,9 +111,38 @@ def a_star_search(problem, heuristic=null_heuristic):
     util.raiseNotDefined()
 
 
-
 # Abbreviations
+
 bfs = breadth_first_search
 dfs = depth_first_search
 astar = a_star_search
 ucs = uniform_cost_search
+
+# ------------ Helper classes/functions ------------
+
+
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.edges = []
+
+    def __eq__(self, other):
+        return self.data == other.data
+
+    def __hash__(self):
+        return self.data
+
+
+class Graph:
+    def __init__(self, nodes=[]):
+        self.nodes = nodes
+
+    def add_node(self, data):
+        new_node = Node(data)
+        self.nodes.append(new_node)
+
+    def add_edge(self, node1, node2):
+        node1.edges.append(node2)
+        node2.edges.append(node1)
+
+# --------------------------------------------------
