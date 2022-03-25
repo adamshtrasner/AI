@@ -63,28 +63,78 @@ def depth_first_search(problem):
     print("Is the start a goal?", problem.is_goal_state(problem.get_start_state()))
     print("Start's successors:", problem.get_successors(problem.get_start_state()))
     """
-    "*** YOUR CODE HERE ***"
     fringe = util.Stack()
     fringe.push(problem.get_start_state())
     closed = set()
-    actions = list()
+    actions = util.Stack()
+
+    # the actual actions to do in order to reach the goal
+    actions_to_goal = list()
+
     while not fringe.isEmpty():
         curr = fringe.pop()
+        if not actions.isEmpty():
+            a = actions.pop()
+            while a == '#':
+                actions_to_goal.pop()
+                a = actions.pop()
+            actions_to_goal.append(a)
         if problem.is_goal_state(curr):
-            return actions
+            return actions_to_goal
         if curr not in closed:
-            successors = problem.get_successors(curr)
-            for successor in successors:
-                fringe.push(successor[0])
-                actions.append(successor[1])
             closed.add(curr)
+            successors = problem.get_successors(curr)
+            if successors:
+                # pushing a delimiter to know where do we backtrack in the graph
+                actions.push('#')
+
+                for successor in successors:
+                    fringe.push(successor[0])
+                    actions.push(successor[1])
+            else:
+                # If it's a leaf we go back
+                actions_to_goal.pop()
+        else:
+            actions_to_goal.pop()
+
 
 def breadth_first_search(problem):
+    # TODO: Finish implementing DFS correctly.
     """
     Search the shallowest nodes in the search tree first.
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    fringe = util.Queue()
+    fringe.push(problem.get_start_state())
+    closed = set()
+    actions = util.Queue()
+
+    # the actual actions to do in order to reach the goal
+    actions_to_goal = util.Queue()
+
+    while not fringe.isEmpty():
+        curr = fringe.pop()
+        if not actions.isEmpty():
+            a = actions.pop()
+            while a == '#':
+                actions_to_goal.pop()
+                a = actions.pop()
+            actions_to_goal.push(a)
+        if problem.is_goal_state(curr):
+            return actions_to_goal
+        if curr not in closed:
+            closed.add(curr)
+            successors = problem.get_successors(curr)
+            if successors:
+                for successor in successors:
+                    fringe.push(successor[0])
+                    actions.push(successor[1])
+                # pushing a delimiter to know where do we backtrack in the graph
+                actions.push('#')
+            else:
+                # If it's a leaf we go back
+                actions_to_goal.pop()
+        else:
+            actions_to_goal.pop()
 
 
 def uniform_cost_search(problem):

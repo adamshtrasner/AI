@@ -50,24 +50,30 @@ class BlokusFillProblem(SearchProblem):
         return len(actions)
 
 
-
 #####################################################
 # This portion is incomplete.  Time to write code!  #
 #####################################################
+
+
 class BlokusCornersProblem(SearchProblem):
+
     def __init__(self, board_w, board_h, piece_list, starting_point=(0, 0)):
         self.expanded = 0
         "*** YOUR CODE HERE ***"
+        self.board = Board(board_w, board_h, 1, piece_list, starting_point)
 
-    def get_start_state(self):
+    def get_start_state(self) -> Board:
         """
         Returns the start state for the search problem
         """
         return self.board
 
-    def is_goal_state(self, state):
+    def is_goal_state(self, state: Board) -> bool:
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return not (state.get_position(0, 0) or
+                    state.get_position(state.board_w - 1, 0) or
+                    state.get_position(0, state.board_h - 1) or
+                    state.get_position(state.board_h - 1, state.board_w - 1))
 
     def get_successors(self, state):
         """
@@ -91,7 +97,10 @@ class BlokusCornersProblem(SearchProblem):
         be composed of legal moves
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        cost = 0
+        for action in actions:
+            cost += action.piece.get_num_tiles()
+        return cost
 
 
 def blokus_corners_heuristic(state, problem):
