@@ -63,78 +63,14 @@ def depth_first_search(problem):
     print("Is the start a goal?", problem.is_goal_state(problem.get_start_state()))
     print("Start's successors:", problem.get_successors(problem.get_start_state()))
     """
-    fringe = util.Stack()
-    fringe.push(problem.get_start_state())
-    closed = set()
-    actions = util.Stack()
-
-    # the actual actions to do in order to reach the goal
-    actions_to_goal = list()
-
-    while not fringe.isEmpty():
-        curr = fringe.pop()
-        if not actions.isEmpty():
-            a = actions.pop()
-            while a == '#':
-                actions_to_goal.pop()
-                a = actions.pop()
-            actions_to_goal.append(a)
-        if problem.is_goal_state(curr):
-            return actions_to_goal
-        if curr not in closed:
-            closed.add(curr)
-            successors = problem.get_successors(curr)
-            if successors:
-                # pushing a delimiter to know where do we backtrack in the graph
-                actions.push('#')
-
-                for successor in successors:
-                    fringe.push(successor[0])
-                    actions.push(successor[1])
-            else:
-                # If it's a leaf we go back
-                actions_to_goal.pop()
-        else:
-            actions_to_goal.pop()
+    return generic_search(problem, util.Stack())
 
 
 def breadth_first_search(problem):
-    # TODO: Finish implementing DFS correctly.
     """
     Search the shallowest nodes in the search tree first.
     """
-    fringe = util.Queue()
-    fringe.push(problem.get_start_state())
-    closed = set()
-    actions = util.Queue()
-
-    # the actual actions to do in order to reach the goal
-    actions_to_goal = util.Queue()
-
-    while not fringe.isEmpty():
-        curr = fringe.pop()
-        if not actions.isEmpty():
-            a = actions.pop()
-            while a == '#':
-                actions_to_goal.pop()
-                a = actions.pop()
-            actions_to_goal.push(a)
-        if problem.is_goal_state(curr):
-            return actions_to_goal
-        if curr not in closed:
-            closed.add(curr)
-            successors = problem.get_successors(curr)
-            if successors:
-                for successor in successors:
-                    fringe.push(successor[0])
-                    actions.push(successor[1])
-                # pushing a delimiter to know where do we backtrack in the graph
-                actions.push('#')
-            else:
-                # If it's a leaf we go back
-                actions_to_goal.pop()
-        else:
-            actions_to_goal.pop()
+    return generic_search(problem, util.Queue())
 
 
 def uniform_cost_search(problem):
@@ -142,7 +78,8 @@ def uniform_cost_search(problem):
     Search the node of least total cost first.
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    cost_func = lambda state: problem.get_cost_of_actions(state.list_of_actions)
+    return generic_search(problem, util.PriorityQueueWithFunction(cost_func))
 
 
 def null_heuristic(state, problem=None):
@@ -157,8 +94,9 @@ def a_star_search(problem, heuristic=null_heuristic):
     """
     Search the node that has the lowest combined cost and heuristic first.
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    cost_func = lambda state: problem.get_cost_of_actions(state.list_of_actions) \
+                              + heuristic(state.state, problem)
+    return generic_search(problem, util.PriorityQueueWithFunction(cost_func))
 
 
 # Abbreviations
@@ -168,31 +106,43 @@ dfs = depth_first_search
 astar = a_star_search
 ucs = uniform_cost_search
 
+
 # ------------ Helper classes/functions ------------
 
 
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.edges = []
+def generic_search(problem, fringe):
+    """
+    A generic search function.
+    This function uses the algorithm for graph search taught in class.
+    The data structure of the fringe is dependent on the search we choose,
+    and every element in the fringe is of class State.
+    """
+    closed = set()
+    path_of_actions = list()
+    fringe.push(State(problem.get_start_state(), path_of_actions))
 
-    def __eq__(self, other):
-        return self.data == other.data
+    while not fringe.isEmpty():
+        curr = fringe.pop()
 
-    def __hash__(self):
-        return self.data
+        if problem.is_goal_state(curr.state):
+            return curr.list_of_actions
+
+        if curr.state not in closed:
+            closed.add(curr.state)
+            successors = problem.get_successors(curr.state)
+            for successor in successors:
+                # Append state with current successor and list of actions
+                # with the added successor's action
+                fringe.push(State(successor[0], curr.list_of_actions + [successor[1]]))
 
 
-class Graph:
-    def __init__(self, nodes=[]):
-        self.nodes = nodes
+class State:
+    """
+    A class of state which represents an item in the fringe,
+    in order to keep the path of actions for each state in the fringe.
+    """
 
-    def add_node(self, data):
-        new_node = Node(data)
-        self.nodes.append(new_node)
-
-    def add_edge(self, node1, node2):
-        node1.edges.append(node2)
-        node2.edges.append(node1)
-
+    def __init__(self, state, list_of_actions):
+        self.state = state
+        self.list_of_actions = list_of_actions
 # --------------------------------------------------
