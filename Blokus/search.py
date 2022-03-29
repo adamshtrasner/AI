@@ -94,8 +94,10 @@ def a_star_search(problem, heuristic=null_heuristic):
     """
     Search the node that has the lowest combined cost and heuristic first.
     """
-    cost_func = lambda state: problem.get_cost_of_actions(state.list_of_actions) \
-                              + heuristic(state.state, problem)
+    # according to: f(v) = h(v) + g(v)
+    # where h is the heuristic and g is the cost to v so far
+    cost_func = lambda state: \
+        heuristic(state.state, problem) + problem.get_cost_of_actions(state.list_of_actions)
     return generic_search(problem, util.PriorityQueueWithFunction(cost_func))
 
 
@@ -135,13 +137,16 @@ def generic_search(problem, fringe):
                 # with the added successor's action
                 fringe.push(State(successor[0], curr.list_of_actions + [successor[1]]))
 
+# We created a class because adding tuples or lists of size 2 into the fringe
+# raised an error because the push function fails (__lt__ exists for both tuples
+# and lists)
+
 
 class State:
     """
     A class of state which represents an item in the fringe,
     in order to keep the path of actions for each state in the fringe.
     """
-
     def __init__(self, state, list_of_actions):
         self.state = state
         self.list_of_actions = list_of_actions
