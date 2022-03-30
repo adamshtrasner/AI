@@ -60,6 +60,10 @@ class BlokusCornersProblem(SearchProblem):
     def __init__(self, board_w, board_h, piece_list, starting_point=(0, 0)):
         self.expanded = 0
         self.board = Board(board_w, board_h, 1, piece_list, starting_point)
+        self.corners = [(0, 0),
+                        (board_h - 1, 0),
+                        (0, board_w - 1),
+                        (board_w - 1, board_h - 1)]
 
     def get_start_state(self) -> Board:
         """
@@ -68,10 +72,7 @@ class BlokusCornersProblem(SearchProblem):
         return self.board
 
     def is_goal_state(self, state: Board) -> bool:
-        return not (state.get_position(0, 0) or
-                    state.get_position(state.board_w - 1, 0) or
-                    state.get_position(0, state.board_h - 1) or
-                    state.get_position(state.board_h - 1, state.board_w - 1))
+        return are_targets_covered(state, self.corners)
 
     def get_successors(self, state):
         """
@@ -97,7 +98,7 @@ class BlokusCornersProblem(SearchProblem):
         return cost_by_number_of_tiles(actions)
 
 
-def blokus_corners_heuristic(state, problem):
+def blokus_corners_heuristic(state: Board, problem: BlokusCornersProblem):
     """
     Your heuristic for the BlokusCornersProblem goes here.
 
@@ -109,8 +110,24 @@ def blokus_corners_heuristic(state, problem):
     your heuristic is *not* consistent, and probably not admissible!  On the other hand,
     inadmissible or inconsistent heuristics may find optimal solutions, so be careful.
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    # The heuristic: use the minimum number of tiles of
+    # a possible piece in the current state, for some corner
+    # that is still free.
+
+    min_number_of_tiles = max(state.board_h, state.board_w)
+    for i in range(state.piece_list.get_num_pieces()):
+        if state.pieces[0][i]:
+            min_number_of_tiles = min(min_number_of_tiles, state.piece_list.get_piece(i).get_num_tiles())
+
+    for corner in problem.corners:
+        if state.get_position(corner[1], corner[0]):
+            if state.check_tile_legal(0, corner[1], corner[0]):
+                if min_number_of_tiles < min(state.board_h, state.board_w):
+                    return min_number_of_tiles
+                return 1
+            return 99999
+    return 0
 
 
 class BlokusCoverProblem(SearchProblem):
@@ -130,10 +147,7 @@ class BlokusCoverProblem(SearchProblem):
         # for target in self.targets:
         #     is_covered = is_covered and not bool(state.get_position(target[0], target[1]))
         # return is_covered
-        for target in self.targets:
-            if state.get_position(target[1], target[0]):
-                return False
-        return True
+        return are_targets_covered(state, self.targets)
 
     def get_successors(self, state):
         """
@@ -160,8 +174,7 @@ class BlokusCoverProblem(SearchProblem):
 
 
 def blokus_cover_heuristic(state, problem):
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    pass
 
 
 class ClosestLocationSearch:
@@ -232,6 +245,17 @@ def cost_by_number_of_tiles(actions):
     for action in actions:
         cost += action.piece.get_num_tiles()
     return cost
+
+
+def are_targets_covered(state, targets):
+    for target in targets:
+        if state.get_position(target[1], target[0]):
+            return False
+    return True
+
+
+def chebyshev_distance(xy1, xy2):
+    return max(abs(xy1[0] - xy2[0]), abs(xy1[1] - xy2[1]))
 
 
 # --------------------------------------------------
