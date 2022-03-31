@@ -2,6 +2,7 @@ from board import Board
 from search import SearchProblem, ucs
 import util
 
+COST_FOR_ILLEGAL_STATE = 999999
 
 class BlokusFillProblem(SearchProblem):
     """
@@ -64,6 +65,7 @@ class BlokusCornersProblem(SearchProblem):
                         (board_h - 1, 0),
                         (0, board_w - 1),
                         (board_w - 1, board_h - 1)]
+        self.starting_point = starting_point
 
     def get_start_state(self) -> Board:
         """
@@ -111,7 +113,7 @@ def blokus_corners_heuristic(state: Board, problem: BlokusCornersProblem):
     inadmissible or inconsistent heuristics may find optimal solutions, so be careful.
     """
 
-    # The heuristic: use the minimum number of tiles of
+    # The heuristic: returns the minimum number of tiles of
     # a possible piece in the current state, for some corner
     # that is still free.
 
@@ -122,11 +124,13 @@ def blokus_corners_heuristic(state: Board, problem: BlokusCornersProblem):
 
     for corner in problem.corners:
         if state.get_position(corner[1], corner[0]):
-            if state.check_tile_legal(0, corner[1], corner[0]):
+            if state.check_tile_legal(0, corner[1], corner[0]) and state.connected[0, corner[1], corner[0]]:
                 if min_number_of_tiles < min(state.board_h, state.board_w):
                     return min_number_of_tiles
-                return 1
-            return 99999
+                return 0
+            return COST_FOR_ILLEGAL_STATE
+
+    # If out of loop that means we covered all corners
     return 0
 
 
@@ -135,6 +139,7 @@ class BlokusCoverProblem(SearchProblem):
         self.targets = targets.copy()
         self.expanded = 0
         self.board = Board(board_w, board_h, 1, piece_list, starting_point)
+        self.starting_point = starting_point
 
     def get_start_state(self):
         """
@@ -143,10 +148,6 @@ class BlokusCoverProblem(SearchProblem):
         return self.board
 
     def is_goal_state(self, state: Board) -> bool:
-        # is_covered = True
-        # for target in self.targets:
-        #     is_covered = is_covered and not bool(state.get_position(target[0], target[1]))
-        # return is_covered
         return are_targets_covered(state, self.targets)
 
     def get_successors(self, state):
@@ -174,7 +175,12 @@ class BlokusCoverProblem(SearchProblem):
 
 
 def blokus_cover_heuristic(state, problem):
-    pass
+    # TODO: CHECK if this is really ADMISSIBLE and CONSISTENT !!!
+    for corner in problem.targets:
+        if not state.check_tile_legal(0, corner[1], corner[0]):
+            if state.get_position(corner[1], corner[0]):
+                return COST_FOR_ILLEGAL_STATE
+    return chebyshev_heuristic(state, problem)
 
 
 class ClosestLocationSearch:
@@ -252,6 +258,35 @@ def are_targets_covered(state, targets):
         if state.get_position(target[1], target[0]):
             return False
     return True
+
+
+def chebyshev_heuristic(state, problem):
+    # If the state is the starting state, the list of points would
+    # have the starting point only
+    legal_points = list()
+    if state == problem.get_start_state():
+        legal_points.append(problem.starting_point)
+    else:
+        # Go over all points that can be reached legally
+        for i in range(state.board_h):
+            for j in range(state.board_w):
+                if state.check_tile_legal(0, j, i) and state.connected[0, j, i]:
+                    legal_points.append((i, j))
+
+    # return inf if the list of those points is empty
+    if not legal_points:
+        return COST_FOR_ILLEGAL_STATE
+
+    # compute chebyshev's distance for each of the legal points to
+    # each corner, save the minimum of each distance (save the cost of
+    # the closest point to a particular corner according to chebyshev's distance)
+    # and apply max for each corner
+    max_distance = 0
+    for target in problem.targets:
+        if state.get_position(target[1], target[0]):
+            max_distance = max(max_distance,
+                               min(chebyshev_distance(point, target) for point in legal_points))
+    return max_distance
 
 
 def chebyshev_distance(xy1, xy2):
