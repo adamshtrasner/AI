@@ -3,6 +3,8 @@ from search import SearchProblem, ucs
 import util
 
 COST_FOR_ILLEGAL_STATE = 999999
+MAX_TILES_FOR_PIECE = 5
+
 
 class BlokusFillProblem(SearchProblem):
     """
@@ -117,7 +119,7 @@ def blokus_corners_heuristic(state: Board, problem: BlokusCornersProblem):
     # a possible piece in the current state, for some corner
     # that is still free.
 
-    min_number_of_tiles = max(state.board_h, state.board_w)
+    min_number_of_tiles = MAX_TILES_FOR_PIECE
     for i in range(state.piece_list.get_num_pieces()):
         if state.pieces[0][i]:
             min_number_of_tiles = min(min_number_of_tiles, state.piece_list.get_piece(i).get_num_tiles())
@@ -125,9 +127,7 @@ def blokus_corners_heuristic(state: Board, problem: BlokusCornersProblem):
     for corner in problem.corners:
         if state.get_position(corner[1], corner[0]):
             if state.check_tile_legal(0, corner[1], corner[0]) and state.connected[0, corner[1], corner[0]]:
-                if min_number_of_tiles < min(state.board_h, state.board_w):
-                    return min_number_of_tiles
-                return 0
+                return min_number_of_tiles
             return COST_FOR_ILLEGAL_STATE
 
     # If out of loop that means we covered all corners
@@ -175,11 +175,9 @@ class BlokusCoverProblem(SearchProblem):
 
 
 def blokus_cover_heuristic(state, problem):
-    # TODO: CHECK if this is really ADMISSIBLE and CONSISTENT !!!
     for corner in problem.targets:
-        if not state.check_tile_legal(0, corner[1], corner[0]):
-            if state.get_position(corner[1], corner[0]):
-                return COST_FOR_ILLEGAL_STATE
+        if not state.check_tile_legal(0, corner[1], corner[0]) and state.get_position(corner[1], corner[0]):
+            return COST_FOR_ILLEGAL_STATE
     return chebyshev_heuristic(state, problem)
 
 
@@ -189,9 +187,13 @@ class ClosestLocationSearch:
     but the objective is speed, not optimality.
     """
 
-    def __init__(self, board_w, board_h, piece_list, starting_point=(0, 0), targets=(0, 0)):
+    def __init__(self, board_w, board_h, piece_list, starting_point=(0, 0), targets=[(0, 0)]):
         self.expanded = 0
         self.targets = targets.copy()
+        self.board_w = board_w
+        self.board_h = board_h
+        self.piece_list = piece_list
+        self.starting_point = starting_point
         self.board = Board(board_w, board_h, 1, piece_list, starting_point)
 
     def get_start_state(self):
@@ -199,6 +201,13 @@ class ClosestLocationSearch:
         Returns the start state for the search problem
         """
         return self.board
+
+    def closest_point(self, point):
+        """
+        Returns the index of the closest target out of all targets
+        to a given point.
+        """
+        return min(list(enumerate(self.targets)), key=lambda t: chebyshev_distance(t[1], point))[0]
 
     def solve(self):
         """
@@ -219,8 +228,31 @@ class ClosestLocationSearch:
 
         return backtrace
         """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        current_state = self.board.__copy__()
+        backtrace = []
+
+        while self.targets:
+            # find the target which is the closest to the current starting point
+            target = self.targets.pop(self.closest_point(self.starting_point))
+
+            # define the sub problem to be the BlokusCoverProblem with current starting point
+            # and the targets list consists of the closest target
+            sub_problem = BlokusCoverProblem(self.board_w, self.board_h, self.piece_list,
+                                             self.starting_point, [target])
+            sub_problem.board = current_state
+
+            # add all moves to the current state
+            actions = ucs(sub_problem)
+            for move in actions:
+                current_state.add_move(0, move)
+
+            # update backtrace, amount of expanded nodes
+            # and starting_point to the current target
+            backtrace += actions
+            self.expanded += sub_problem.expanded
+            self.starting_point = target
+
+        return backtrace
 
 
 class MiniContestSearch:
@@ -278,9 +310,9 @@ def chebyshev_heuristic(state, problem):
         return COST_FOR_ILLEGAL_STATE
 
     # compute chebyshev's distance for each of the legal points to
-    # each corner, save the minimum of each distance (save the cost of
-    # the closest point to a particular corner according to chebyshev's distance)
-    # and apply max for each corner
+    # each target, save the minimum of each distance (save the cost of
+    # the closest point to a particular target according to chebyshev's distance)
+    # and apply max for each target
     max_distance = 0
     for target in problem.targets:
         if state.get_position(target[1], target[0]):
