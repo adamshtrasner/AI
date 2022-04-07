@@ -2,6 +2,7 @@ import numpy as np
 import abc
 import util
 from game import Agent, Action
+from math import ceil
 
 
 class ReflexAgent(Agent):
@@ -53,6 +54,8 @@ class ReflexAgent(Agent):
         score = successor_game_state.score
 
         "*** YOUR CODE HERE ***"
+        # TODO: try and improve more if I can
+        score = num_of_empty_tiles(successor_game_state)
         return score
 
 
@@ -92,6 +95,7 @@ class MultiAgentSearchAgent(Agent):
 
 
 class MinmaxAgent(MultiAgentSearchAgent):
+    
     def get_action(self, game_state):
         """
         Returns the minimax action from the current gameState using self.depth
@@ -109,9 +113,26 @@ class MinmaxAgent(MultiAgentSearchAgent):
         game_state.generate_successor(agent_index, action):
             Returns the successor game state after an agent takes an action
         """
-        """*** YOUR CODE HERE ***"""
-        util.raiseNotDefined()
+        if self.depth == 0:
+            return Action.STOP
+        return self.minmax_algorithm(game_state, self.depth, True)
 
+    def minmax_algorithm(self, game_state, depth, is_max_node):
+        agent_index = int(is_max_node)
+        legal_actions = game_state.get_legal_actions(agent_index)
+        is_terminal_node = not legal_actions
+
+        if depth == 0 or is_terminal_node:
+            return self.evaluation_function(game_state)
+
+        successors = [game_state.generate_successor(agent_index, action) for action in legal_actions]
+
+        if is_max_node:
+            chosen_index = max([(self.minmax_algorithm(s, depth - 1, False), i) for i, s in enumerate(successors)])[1]
+        else:
+            chosen_index = min([(self.minmax_algorithm(s, depth - 1, True), i) for i, s in enumerate(successors)])[1]
+        return legal_actions[chosen_index]
+        # print(max([(self.evaluation_function(s), i) for i, s in enumerate(successors)])[0])
 
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
@@ -125,7 +146,6 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         """
         """*** YOUR CODE HERE ***"""
         util.raiseNotDefined()
-
 
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
@@ -144,9 +164,6 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         util.raiseNotDefined()
 
 
-
-
-
 def better_evaluation_function(current_game_state):
     """
     Your extreme 2048 evaluation function (question 5).
@@ -159,3 +176,14 @@ def better_evaluation_function(current_game_state):
 
 # Abbreviation
 better = better_evaluation_function
+
+# ------------ Helper classes/functions ------------
+
+
+def num_of_empty_tiles(game_state):
+    """
+    Number of empty tiles heuristic
+    """
+    return len(game_state.get_empty_tiles()[0])
+
+# --------------------------------------------------
