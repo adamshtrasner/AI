@@ -113,9 +113,14 @@ class MinmaxAgent(MultiAgentSearchAgent):
         game_state.generate_successor(agent_index, action):
             Returns the successor game state after an agent takes an action
         """
-        if self.depth == 0:
+        legal_actions = game_state.get_legal_actions(0)
+        if not legal_actions:
             return Action.STOP
-        return self.minmax_algorithm(game_state, self.depth, True)
+        actions = list()
+        for action in legal_actions:
+            successor = game_state.generate_successor(0, action)
+            actions.append((self.minmax_algorithm(successor, self.depth - 1, True), action))
+        return max(actions, key=lambda t: t[0])[1]
 
     def minmax_algorithm(self, game_state, depth, is_max_node):
         agent_index = int(is_max_node)
@@ -128,11 +133,9 @@ class MinmaxAgent(MultiAgentSearchAgent):
         successors = [game_state.generate_successor(agent_index, action) for action in legal_actions]
 
         if is_max_node:
-            chosen_index = max([(self.minmax_algorithm(s, depth - 1, False), i) for i, s in enumerate(successors)])[1]
+            return max(self.minmax_algorithm(s, depth, False) for s in successors)
         else:
-            chosen_index = min([(self.minmax_algorithm(s, depth - 1, True), i) for i, s in enumerate(successors)])[1]
-        return legal_actions[chosen_index]
-        # print(max([(self.evaluation_function(s), i) for i, s in enumerate(successors)])[0])
+            return min(self.minmax_algorithm(s, depth - 1, True) for i, s in enumerate(successors))
 
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
@@ -185,5 +188,4 @@ def num_of_empty_tiles(game_state):
     Number of empty tiles heuristic
     """
     return len(game_state.get_empty_tiles()[0])
-
 # --------------------------------------------------
