@@ -2,7 +2,7 @@ import numpy as np
 import abc
 import util
 from game import Agent, Action
-from math import ceil
+import math
 
 
 class ReflexAgent(Agent):
@@ -120,6 +120,7 @@ class MinmaxAgent(MultiAgentSearchAgent):
         for action in legal_actions:
             successor = game_state.generate_successor(0, action)
             actions.append((self.minmax_algorithm(successor, self.depth - 1, True), action))
+        print(max(actions, key=lambda t: t[0])[0])
         return max(actions, key=lambda t: t[0])[1]
 
     def minmax_algorithm(self, game_state, depth, is_max_node):
@@ -135,7 +136,7 @@ class MinmaxAgent(MultiAgentSearchAgent):
         if is_max_node:
             return max(self.minmax_algorithm(s, depth, False) for s in successors)
         else:
-            return min(self.minmax_algorithm(s, depth - 1, True) for i, s in enumerate(successors))
+            return min(self.minmax_algorithm(s, depth - 1, True) for s in successors)
 
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
@@ -147,8 +148,38 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         """
         Returns the minimax action using self.depth and self.evaluationFunction
         """
-        """*** YOUR CODE HERE ***"""
-        util.raiseNotDefined()
+        legal_actions = game_state.get_legal_actions(0)
+        if not legal_actions:
+            return Action.STOP
+        actions = list()
+        for action in legal_actions:
+            successor = game_state.generate_successor(0, action)
+            actions.append((self.alpha_beta_pruning(successor, self.depth - 1, -math.inf, math.inf, True), action))
+        print(max(actions, key=lambda t: t[0])[0])
+        return max(actions, key=lambda t: t[0])[1]
+
+    def alpha_beta_pruning(self, game_state, depth, alpha, beta, is_max_node):
+        agent_index = int(is_max_node)
+        legal_actions = game_state.get_legal_actions(agent_index)
+        is_terminal_node = not legal_actions
+
+        if depth == 0 or is_terminal_node:
+            return self.evaluation_function(game_state)
+
+        successors = [game_state.generate_successor(agent_index, action) for action in legal_actions]
+
+        if is_max_node:
+            for s in successors:
+                alpha = max(alpha, self.alpha_beta_pruning(s, depth, alpha, beta, False))
+                if beta <= alpha:
+                    break
+                return alpha
+        else:
+            for s in successors:
+                beta = min(beta, self.alpha_beta_pruning(s, depth - 1, alpha, beta, True))
+                if beta <= alpha:
+                    break
+                return beta
 
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
