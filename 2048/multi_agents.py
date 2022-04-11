@@ -120,7 +120,6 @@ class MinmaxAgent(MultiAgentSearchAgent):
         for action in legal_actions:
             successor = game_state.generate_successor(0, action)
             actions.append((self.minmax_algorithm(successor, self.depth - 1, True), action))
-        print(max(actions, key=lambda t: t[0])[0])
         return max(actions, key=lambda t: t[0])[1]
 
     def minmax_algorithm(self, game_state, depth, is_max_node):
@@ -155,7 +154,6 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         for action in legal_actions:
             successor = game_state.generate_successor(0, action)
             actions.append((self.alpha_beta_pruning(successor, self.depth - 1, -math.inf, math.inf, True), action))
-        print(max(actions, key=lambda t: t[0])[0])
         return max(actions, key=lambda t: t[0])[1]
 
     def alpha_beta_pruning(self, game_state, depth, alpha, beta, is_max_node):
@@ -173,13 +171,13 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                 alpha = max(alpha, self.alpha_beta_pruning(s, depth, alpha, beta, False))
                 if beta <= alpha:
                     break
-                return alpha
+            return alpha
         else:
             for s in successors:
                 beta = min(beta, self.alpha_beta_pruning(s, depth - 1, alpha, beta, True))
                 if beta <= alpha:
                     break
-                return beta
+            return beta
 
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
@@ -194,8 +192,30 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         The opponent should be modeled as choosing uniformly at random from their
         legal moves.
         """
-        """*** YOUR CODE HERE ***"""
-        util.raiseNotDefined()
+        legal_actions = game_state.get_legal_actions(0)
+        if not legal_actions:
+            return Action.STOP
+        actions = list()
+        for action in legal_actions:
+            successor = game_state.generate_successor(0, action)
+            actions.append((self.expectimax_algorithm(successor, self.depth - 1, True), action))
+        return max(actions, key=lambda t: t[0])[1]
+
+    def expectimax_algorithm(self, game_state, depth, is_max_node):
+        agent_index = int(is_max_node)
+        legal_actions = game_state.get_legal_actions(agent_index)
+        is_terminal_node = not legal_actions
+
+        if depth == 0 or is_terminal_node:
+            return self.evaluation_function(game_state)
+
+        successors = [game_state.generate_successor(agent_index, action) for action in legal_actions]
+        n = len(successors)
+
+        if is_max_node:
+            return max(self.expectimax_algorithm(s, depth, False) for s in successors)
+        else:
+            return sum([self.expectimax_algorithm(s, depth - 1, True)*(1/n) for s in successors])
 
 
 def better_evaluation_function(current_game_state):
@@ -204,8 +224,7 @@ def better_evaluation_function(current_game_state):
 
     DESCRIPTION: <write something here so we know what you did>
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    return total_differences(current_game_state.board)
 
 
 # Abbreviation
@@ -219,4 +238,17 @@ def num_of_empty_tiles(game_state):
     Number of empty tiles heuristic
     """
     return len(game_state.get_empty_tiles()[0])
+
+
+def total_differences(board):
+    sum = 0
+    num_rows = len(board)
+    num_cols = len(board.T)
+    for i in range(num_rows):
+        sum += np.sum(np.abs(np.ediff1d(board[i])))
+        print(np.sum(np.abs(np.ediff1d(board[i]))))
+    for j in range(num_cols):
+        sum += np.sum(np.abs(np.ediff1d(board.T[j])))
+        print(board.T[j])
+    return sum
 # --------------------------------------------------
