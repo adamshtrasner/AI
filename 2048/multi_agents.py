@@ -224,7 +224,7 @@ def better_evaluation_function(current_game_state):
 
     DESCRIPTION: <write something here so we know what you did>
     """
-    return total_differences(current_game_state.board)
+    return weighted_sum_of_board(current_game_state.board) + num_of_empty_tiles(current_game_state)
 
 
 # Abbreviation
@@ -241,14 +241,26 @@ def num_of_empty_tiles(game_state):
 
 
 def total_differences(board):
+    """
+    Sum of differences between each adjacent tile in each row and column - heuristic.
+    """
     sum = 0
     num_rows = len(board)
     num_cols = len(board.T)
     for i in range(num_rows):
         sum += np.sum(np.abs(np.ediff1d(board[i])))
-        print(np.sum(np.abs(np.ediff1d(board[i]))))
     for j in range(num_cols):
         sum += np.sum(np.abs(np.ediff1d(board.T[j])))
-        print(board.T[j])
     return sum
+
+
+first_row = [pow(4, x) for x in range(15, 11, -1)]
+second_row = [pow(4, x) for x in range(8, 12)]
+third_row = [pow(4, x) for x in range(7, 3, -1)]
+forth_row = [pow(4, x) for x in range(0, 4)]
+snake_matrix = np.array([first_row, second_row, third_row, forth_row])
+
+
+def weighted_sum_of_board(board):
+    return np.sum(snake_matrix * board)
 # --------------------------------------------------
