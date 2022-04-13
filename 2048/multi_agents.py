@@ -54,8 +54,7 @@ class ReflexAgent(Agent):
         score = successor_game_state.score
 
         "*** YOUR CODE HERE ***"
-        # TODO: try and improve more if I can
-        score = num_of_empty_tiles(successor_game_state)
+        score += num_of_empty_tiles(successor_game_state) ** 2
         return score
 
 
@@ -95,7 +94,7 @@ class MultiAgentSearchAgent(Agent):
 
 
 class MinmaxAgent(MultiAgentSearchAgent):
-    
+
     def get_action(self, game_state):
         """
         Returns the minimax action from the current gameState using self.depth
@@ -215,22 +214,45 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         if is_max_node:
             return max(self.expectimax_algorithm(s, depth, False) for s in successors)
         else:
-            return sum([self.expectimax_algorithm(s, depth - 1, True)*(1/n) for s in successors])
+            return sum([self.expectimax_algorithm(s, depth - 1, True) * (1 / n) for s in successors])
 
 
 def better_evaluation_function(current_game_state):
     """
     Your extreme 2048 evaluation function (question 5).
 
-    DESCRIPTION: <write something here so we know what you did>
+    DESCRIPTION: We used a sum of 2 evaluation functions minus penalties:
+                 (1) weighted sum of board - We used a score matrix, giving each place in the board
+                 a score according to the board's monotonicity: We found out after much research and
+                 game plays that keeping higher tiles more clustered to the corner will result in a
+                 better score, and so we used a snake shaped like matrix, giving higher scores as u get close
+                 to the top left corner, and also it's reasonable to put tiles with different values in a
+                 monotonic order so that they could merge consecutively, and so the reasoning behind the snake
+                 shaped score matrix.
+                 (2) uniformity evaluation - We scored states based on the sum of all numbers of tiles of the
+                 same value, powered to 3 (after examining we thought it suits best).
+                 This way, The chosen algorithm will choose moves that produce the most tiles of the same value.
+
+                 penalty:
+                 (1) total differences - The idea behind this is smoothness. In order for both tiles to merge
+                 they need to have the same value, so we penalize states that that difference is high,
+                 and the penalty for those that have low difference is low.
+                 (2) number of empty tiles - The more empty tiles you have the more you're far away from losing,
+                 and vice versa. Therefore, we penalized states that have less empty tiles. We powered the penalty
+                 by 6, also after many experiments, we found that that power gives the best performance.
     """
-    return weighted_sum_of_board(current_game_state.board) + num_of_empty_tiles(current_game_state)
+    board = current_game_state.board
+    empty_tiles_penalty = 16 - num_of_empty_tiles(current_game_state)
+    total_differences_penalty = total_differences(board)
+    return 0.5*(weighted_sum_of_board(board) + uniformity_evaluation(board)) - total_differences_penalty \
+           - empty_tiles_penalty ** 6
 
 
 # Abbreviation
 better = better_evaluation_function
 
-# ------------ Helper classes/functions ------------
+
+# ------------ Helper functions ------------
 
 
 def num_of_empty_tiles(game_state):
@@ -254,13 +276,16 @@ def total_differences(board):
     return sum
 
 
-first_row = [pow(4, x) for x in range(15, 11, -1)]
-second_row = [pow(4, x) for x in range(8, 12)]
-third_row = [pow(4, x) for x in range(7, 3, -1)]
-forth_row = [pow(4, x) for x in range(0, 4)]
-snake_matrix = np.array([first_row, second_row, third_row, forth_row])
+SNAKE_MATRIX = np.array([[6, 5, 4, 3], [5, 4, 3, 2], [4, 3, 2, 1], [3, 2, 1, 0]]) ** 2
 
 
 def weighted_sum_of_board(board):
-    return np.sum(snake_matrix * board)
+    return np.sum(SNAKE_MATRIX * board)
+
+
+def uniformity_evaluation(board):
+    board_as_list = np.ndarray.tolist(np.ndarray.flatten(board))
+    unique = set(board_as_list)
+    eval = np.array(list(unique)) ** 3
+    return np.sum(eval)
 # --------------------------------------------------
