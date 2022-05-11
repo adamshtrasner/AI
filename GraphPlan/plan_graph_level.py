@@ -59,6 +59,25 @@ class PlanGraphLevel(object):
         """
         all_actions = PlanGraphLevel.actions
         "*** YOUR CODE HERE ***"
+        to_add = True
+        for action in all_actions:
+            if previous_proposition_layer.all_preconds_in_layer(action):
+                # TODO: Check if there's a way to not recheck propositions we
+                #  already checked (we're checking (pre1, pre2) and then (pre2, pre) also)
+                for pre1 in action.get_pre():
+                    for pre2 in action.get_pre():
+                        if pre1 != pre2:
+                            if previous_proposition_layer.is_mutex(pre1, pre2):
+                                to_add = False
+                                break
+
+                    if not to_add:
+                        break
+
+                if to_add:
+                    self.action_layer.add_action(action)
+                else:
+                    to_add = True
 
     def update_mutex_actions(self, previous_layer_mutex_proposition):
         """
@@ -146,14 +165,28 @@ def have_competing_needs(a1, a2, mutex_props):
           returns true if p and q are mutex in the previous level
     """
     "*** YOUR CODE HERE ***"
+    for p in a1.get_pre():
+        for q in a2.get_pre():
+            if Pair(p, q) in mutex_props:
+                return True
+    return False
 
 
-def mutex_propositions(prop1, prop2, mutex_actions_list):
+def mutex_propositions(prop1: Proposition, prop2: Proposition, mutex_actions_list) -> bool:
     """
     complete code for deciding whether two propositions are mutex,
     given the mutex action from the current level (set of pairs of actions).
     Your update_mutex_proposition function should call this function
     You might want to use this function:
-    prop1.get_producers() returns the set of all the possible actions in the layer that have prop1 on their add list
+    prop1.get_producers() returns the set of all the possible actions in the layer that have prop1
+    on their add list
     """
     "*** YOUR CODE HERE ***"
+    actions1 = list(prop1.get_producers())
+    actions2 = list(prop2.get_producers())
+
+    action_pairs = [Pair(a1, a2) for a1 in actions1 for a2 in actions2]
+    for pair in action_pairs:
+        if pair in mutex_actions_list:
+            return True
+    return False
