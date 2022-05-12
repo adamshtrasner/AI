@@ -234,6 +234,31 @@ def independent_pair(a1, a2):
     a1.is_neg_effect(p) returns true is p is in a1.get_delete()
     """
     "*** YOUR CODE HERE ***"
+    add1 = a1.get_add()
+    del1 = a1.get_delete()
+
+    add2 = a2.get_add()
+    del2 = a2.get_delete()
+
+    # Checking inconsistent effects
+    for prop1 in add1:
+        if a2.is_neg_effect(prop1):
+            return False
+
+    for prop2 in add2:
+        if a1.is_neg_effect(prop2):
+            return False
+
+    # Checking interference
+    for pre1 in del1:
+        if a2.is_pre_cond(pre1):
+            return False
+
+    for pre2 in del2:
+        if a1.is_pre_cond(pre2):
+            return False
+
+    return True
 
 
 if __name__ == '__main__':
@@ -250,9 +275,10 @@ if __name__ == '__main__':
         problem = str(sys.argv[2])
 
     gp = GraphPlan(domain, problem)
-    start = time.clock()
+    # TODO: changed time.clock() to time.time. Don't forget to change it back!
+    start = time.time()  # here
     plan = gp.graph_plan()
-    elapsed = time.clock() - start
+    elapsed = time.time() - start  # and here
     if plan is not None:
         print("Plan found with %d actions in %.2f seconds" % (len([act for act in plan if not act.is_noop()]), elapsed))
     else:
