@@ -250,12 +250,12 @@ def independent_pair(a1, a2):
             return False
 
     # Checking interference
-    for pre1 in del1:
-        if a2.is_pre_cond(pre1):
+    for d1 in del1:
+        if a2.is_pre_cond(d1):
             return False
 
-    for pre2 in del2:
-        if a1.is_pre_cond(pre2):
+    for d2 in del2:
+        if a1.is_pre_cond(d2):
             return False
 
     return True

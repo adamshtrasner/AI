@@ -5,17 +5,22 @@ from plan_graph_level import PlanGraphLevel
 from pgparser import PgParser
 from action import Action
 
-try:
-    from search import SearchProblem
-    from search import a_star_search
+# TODO: comment out before submitting
 
-except:
-    try:
-        from CPF.search import SearchProblem
-        from CPF.search import a_star_search
-    except:
-        from CPF.search_win_34 import SearchProblem
-        from CPF.search_win_34 import a_star_search
+# try:
+#     from search import SearchProblem
+#     from search import a_star_search
+#
+# except:
+#     try:
+#         from CPF.search import SearchProblem
+#         from CPF.search import a_star_search
+#     except:
+#         from CPF.search_win_34 import SearchProblem
+#         from CPF.search_win_34 import a_star_search
+
+from search import SearchProblem
+from search import a_star_search
 
 
 class PlanningProblem:
@@ -42,12 +47,14 @@ class PlanningProblem:
 
     def get_start_state(self):
         "*** YOUR CODE HERE ***"
+        return self.initialState
 
     def is_goal_state(self, state):
         """
-        Hint: you might want to take a look at goal_state_not_in_prop_payer function
+        Hint: you might want to take a look at goal_state_not_in_prop_layer function
         """
         "*** YOUR CODE HERE ***"
+        return not self.goal_state_not_in_prop_layer(state)
 
     def get_successors(self, state):
         """
@@ -64,14 +71,16 @@ class PlanningProblem:
         """
         self.expanded += 1
         "*** YOUR CODE HERE ***"
+        return [(frozenset(set(list(state) + a.get_add()) - set(a.get_delete())), a, 1) for a in self.actions
+                if a.all_preconds_in_list(state) and not a.is_noop()]
 
     @staticmethod
-    def get_cost_of_actions( actions):
+    def get_cost_of_actions(actions):
         return len(actions)
 
     def goal_state_not_in_prop_layer(self, propositions):
         """
-        Helper function that receives a  list of propositions (propositions) and returns False
+        Helper function that receives a list of propositions (propositions) and returns False
         if not all the goal propositions are in that list
         """
         for goal in self.goal:
@@ -106,6 +115,11 @@ def max_level(state, planning_problem):
     pg_init.set_proposition_layer(prop_layer_init)   #update the new plan graph level with the the proposition layer
     """
     "*** YOUR CODE HERE ***"
+    prop_layer_init = PropositionLayer()
+    for prop in state:
+        prop_layer_init.add_proposition(prop)
+    pg_init = PlanGraphLevel()
+    pg_init.set_proposition_layer(prop_layer_init)
 
 
 def level_sum(state, planning_problem):
@@ -154,10 +168,11 @@ if __name__ == '__main__':
             print("Usage: planning_problem.py domain_name problem_name heuristic_name[max, sum, zero]")
             exit()
 
+    # TODO: changed time.clock() to time.time. Don't forget to change it back!
     prob = PlanningProblem(domain, problem)
-    start = time.clock()
+    start = time.time()  # here
     plan = a_star_search(prob, heuristic)
-    elapsed = time.clock() - start
+    elapsed = time.time() - start  # and here
     if plan is not None:
         print("Plan found with %d actions in %.2f seconds" % (len(plan), elapsed))
     else:

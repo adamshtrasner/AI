@@ -60,25 +60,10 @@ class PlanGraphLevel(object):
         """
         all_actions = PlanGraphLevel.actions
         "*** YOUR CODE HERE ***"
-        to_add = True
         for action in all_actions:
             if previous_proposition_layer.all_preconds_in_layer(action):
-                # TODO: Check if there's a way to not recheck propositions we
-                #  already checked (we're checking (pre1, pre2) and then (pre2, pre) also)
-                for pre1 in action.get_pre():
-                    for pre2 in action.get_pre():
-                        if pre1 != pre2:
-                            if previous_proposition_layer.is_mutex(pre1, pre2):
-                                to_add = False
-                                break
-
-                    if not to_add:
-                        break
-
-                if to_add:
+                if not preconditions_pairwise_mutex(action, previous_proposition_layer):
                     self.action_layer.add_action(action)
-                else:
-                    to_add = True
 
     def update_mutex_actions(self, previous_layer_mutex_proposition):
         """
@@ -170,6 +155,8 @@ class PlanGraphLevel(object):
         """
         previous_layer_proposition = previous_layer.get_proposition_layer()
         "*** YOUR CODE HERE ***"
+        self.update_action_layer(previous_layer_proposition)
+        self.update_proposition_layer()
 
 
 def mutex_actions(a1, a2, mutex_props):
@@ -214,6 +201,21 @@ def mutex_propositions(prop1: Proposition, prop2: Proposition, mutex_actions_lis
 
     action_pairs = [Pair(a1, a2) for a1 in actions1 for a2 in actions2]
     for pair in action_pairs:
-        if pair in mutex_actions_list:
-            return True
+        if pair not in mutex_actions_list:
+            return False
+    return True
+
+
+# --------- Helper function for update_action_layer function (Q4) ---------
+def preconditions_pairwise_mutex(action, previous_proposition_layer):
+    """
+    Returns True if some preconditions of an action are pairwise mutex
+    in the previous proposition layer, False otherwise (return False if none
+    of the preconditions are pairwise mutex)
+    """
+    for pre1 in action.get_pre():
+        for pre2 in action.get_pre():
+            if pre1 != pre2:
+                if previous_proposition_layer.is_mutex(pre1, pre2):
+                    return True
     return False
