@@ -1,4 +1,5 @@
 import sys
+from itertools import product
 
 
 def create_domain_file(domain_file_name, n_, m_):
@@ -6,6 +7,13 @@ def create_domain_file(domain_file_name, n_, m_):
     pegs = ['p_%s' % i for i in list(range(m_))]  # [p_0,..., p_(m_ - 1)]
     domain_file = open(domain_file_name, 'w')  # use domain_file.write(str) to write to domain_file
     "*** YOUR CODE HERE ***"
+    # Writing the propositions - d_ip_j (disk i in peg j)
+    domain_file.write('Propositions:\n')
+    for prop in product(disks, pegs):
+        domain_file.write(prop[0] + prop[1] + ' ')
+    domain_file.write('\n')
+
+    # Writing the actions
 
     domain_file.close()
 

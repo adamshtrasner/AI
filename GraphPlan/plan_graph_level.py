@@ -2,7 +2,6 @@ from action_layer import ActionLayer
 from util import Pair
 from proposition import Proposition
 from proposition_layer import PropositionLayer
-from itertools import combinations
 
 
 class PlanGraphLevel(object):

@@ -4,6 +4,7 @@ from proposition_layer import PropositionLayer
 from plan_graph_level import PlanGraphLevel
 from pgparser import PgParser
 from action import Action
+import numpy as np
 
 # TODO: comment out before submitting
 
@@ -103,7 +104,7 @@ class PlanningProblem:
             self.actions.append(act)
 
 
-def max_level(state, planning_problem):
+def max_level(state, planning_problem: PlanningProblem):
     """
     The heuristic value is the number of layers required to expand all goal propositions.
     If the goal is not reachable from the state your heuristic should return float('inf')
@@ -121,6 +122,19 @@ def max_level(state, planning_problem):
     pg_init = PlanGraphLevel()
     pg_init.set_proposition_layer(prop_layer_init)
 
+    graph = [pg_init]
+    level = 0
+    while planning_problem.goal_state_not_in_prop_layer(graph[level].get_proposition_layer().get_propositions()):
+        if is_fixed(graph, level):
+            # Fail - no solution found
+            return float('inf')
+        level += 1
+        pg_next = PlanGraphLevel()
+        pg_next.expand_without_mutex(graph[level - 1])
+        graph.append(pg_next)
+
+    return level
+
 
 def level_sum(state, planning_problem):
     """
@@ -128,6 +142,39 @@ def level_sum(state, planning_problem):
     If the goal is not reachable from the state your heuristic should return float('inf')
     """
     "*** YOUR CODE HERE ***"
+    prop_layer_init = PropositionLayer()
+    for prop in state:
+        prop_layer_init.add_proposition(prop)
+    pg_init = PlanGraphLevel()
+    pg_init.set_proposition_layer(prop_layer_init)
+
+    graph = [pg_init]
+    level = 0
+    sum_level = 0
+    goal_set = set(planning_problem.goal)
+
+    while True:
+        if is_fixed(graph, level):
+            # Fail - no solution found
+            return float('inf')
+
+        pg_next = PlanGraphLevel()
+        pg_next.expand_without_mutex(graph[level])
+        propositions = graph[level].get_proposition_layer().get_propositions()
+
+        # summing the sub-goal's level where they first appeared
+        for goal in set(goal_set):
+            if goal in propositions:
+                goal_set.remove(goal)
+                sum_level += level
+
+        if not goal_set:
+            break
+        else:
+            graph.append(pg_next)
+            level += 1
+
+    return sum_level
 
 
 def is_fixed(graph, level):
@@ -168,7 +215,7 @@ if __name__ == '__main__':
             print("Usage: planning_problem.py domain_name problem_name heuristic_name[max, sum, zero]")
             exit()
 
-    # TODO: changed time.clock() to time.time. Don't forget to change it back!
+    # TODO: changed time.clock() to time.time(). Don't forget to change it back!
     prob = PlanningProblem(domain, problem)
     start = time.time()  # here
     plan = a_star_search(prob, heuristic)
