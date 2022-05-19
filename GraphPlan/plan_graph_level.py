@@ -61,8 +61,12 @@ class PlanGraphLevel(object):
         "*** YOUR CODE HERE ***"
         for action in all_actions:
             if previous_proposition_layer.all_preconds_in_layer(action):
-                if not preconditions_pairwise_mutex(action, previous_proposition_layer):
-                    self.action_layer.add_action(action)
+                pre = action.get_pre()
+                for i in range(len(pre)):
+                    for j in range(i+1, len(pre)):
+                        if previous_proposition_layer.is_mutex(pre[i], pre[j]):
+                            return
+                self.action_layer.add_action(action)
 
     def update_mutex_actions(self, previous_layer_mutex_proposition):
         """
@@ -74,13 +78,14 @@ class PlanGraphLevel(object):
         adds the pair (action1, action2) to the mutex set in the current action layer
         Note that an action is *not* mutex with itself
         """
-        current_layer_actions = self.action_layer.get_actions()
+        current_layer_actions = list(self.action_layer.get_actions())
         "*** YOUR CODE HERE ***"
-        for a1 in current_layer_actions:
-            for a2 in current_layer_actions:
-                if a1 != a2:
-                    if mutex_actions(a1, a2, previous_layer_mutex_proposition):
-                        self.action_layer.add_mutex_actions(a1, a2)
+        for i in range(len(current_layer_actions)):
+            for j in range(i+1, len(current_layer_actions)):
+                if mutex_actions(current_layer_actions[i], current_layer_actions[j],
+                                 previous_layer_mutex_proposition):
+                    self.action_layer.add_mutex_actions(current_layer_actions[i],
+                                                        current_layer_actions[j])
 
     def update_proposition_layer(self):
         """
@@ -98,19 +103,20 @@ class PlanGraphLevel(object):
         """
         current_layer_actions = self.action_layer.get_actions()
         "*** YOUR CODE HERE ***"
-        prop_hash = set()
+        prop_hash = dict()
         for action in current_layer_actions:
             add_list = action.get_add()
             for prop in add_list:
+                # adds prop to hash map
                 if prop not in prop_hash:
-                    # adds prop to set
-                    prop_hash.add(prop)
+                    prop_hash[prop] = [action]
+                else:
+                    prop_hash[prop] += [action]
 
-                    # adds action to producers list of the current proposition
-                    prop.add_producer(action)
-
-                    # adds proposition to current proposition layer
-                    self.proposition_layer.add_proposition(prop)
+        for prop in prop_hash:
+            prop_to_add = Proposition(prop.get_name())
+            prop_to_add.set_producers(prop_hash[prop])
+            self.proposition_layer.add_proposition(prop_to_add)
 
     def update_mutex_proposition(self):
         """

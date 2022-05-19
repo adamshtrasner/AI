@@ -6,8 +6,6 @@ from pgparser import PgParser
 from action import Action
 import numpy as np
 
-# TODO: comment out before submitting
-
 # try:
 #     from search import SearchProblem
 #     from search import a_star_search

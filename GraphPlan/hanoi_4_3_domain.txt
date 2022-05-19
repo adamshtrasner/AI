@@ -1,0 +1,275 @@
+Propositions:
+On-d_0-d_1 On-d_0-d_2 On-d_0-d_3 On-d_0-p_0 On-d_0-p_1 On-d_0-p_2 Clear-d_0 On-d_1-d_2 On-d_1-d_3 On-d_1-p_0 On-d_1-p_1 On-d_1-p_2 Clear-d_1 On-d_2-d_3 On-d_2-p_0 On-d_2-p_1 On-d_2-p_2 Clear-d_2 On-d_3-p_0 On-d_3-p_1 On-d_3-p_2 Clear-d_3 Clear-p_0 Clear-p_1 Clear-p_2 
+Actions:
+Name: Move-d_0-d_1-d_2 
+pre: On-d_0-d_1 Clear-d_0 Clear-d_2 
+add: Clear-d_1 On-d_0-d_2 
+delete: On-d_0-d_1 Clear-d_2 
+Name: Move-d_0-d_1-d_3 
+pre: On-d_0-d_1 Clear-d_0 Clear-d_3 
+add: Clear-d_1 On-d_0-d_3 
+delete: On-d_0-d_1 Clear-d_3 
+Name: Move-d_0-d_1-p_0 
+pre: On-d_0-d_1 Clear-d_0 Clear-p_0 
+add: Clear-d_1 On-d_0-p_0 
+delete: On-d_0-d_1 Clear-p_0 
+Name: Move-d_0-d_1-p_1 
+pre: On-d_0-d_1 Clear-d_0 Clear-p_1 
+add: Clear-d_1 On-d_0-p_1 
+delete: On-d_0-d_1 Clear-p_1 
+Name: Move-d_0-d_1-p_2 
+pre: On-d_0-d_1 Clear-d_0 Clear-p_2 
+add: Clear-d_1 On-d_0-p_2 
+delete: On-d_0-d_1 Clear-p_2 
+Name: Move-d_0-d_2-d_1 
+pre: On-d_0-d_2 Clear-d_0 Clear-d_1 
+add: Clear-d_2 On-d_0-d_1 
+delete: On-d_0-d_2 Clear-d_1 
+Name: Move-d_0-d_2-d_3 
+pre: On-d_0-d_2 Clear-d_0 Clear-d_3 
+add: Clear-d_2 On-d_0-d_3 
+delete: On-d_0-d_2 Clear-d_3 
+Name: Move-d_0-d_2-p_0 
+pre: On-d_0-d_2 Clear-d_0 Clear-p_0 
+add: Clear-d_2 On-d_0-p_0 
+delete: On-d_0-d_2 Clear-p_0 
+Name: Move-d_0-d_2-p_1 
+pre: On-d_0-d_2 Clear-d_0 Clear-p_1 
+add: Clear-d_2 On-d_0-p_1 
+delete: On-d_0-d_2 Clear-p_1 
+Name: Move-d_0-d_2-p_2 
+pre: On-d_0-d_2 Clear-d_0 Clear-p_2 
+add: Clear-d_2 On-d_0-p_2 
+delete: On-d_0-d_2 Clear-p_2 
+Name: Move-d_0-d_3-d_1 
+pre: On-d_0-d_3 Clear-d_0 Clear-d_1 
+add: Clear-d_3 On-d_0-d_1 
+delete: On-d_0-d_3 Clear-d_1 
+Name: Move-d_0-d_3-d_2 
+pre: On-d_0-d_3 Clear-d_0 Clear-d_2 
+add: Clear-d_3 On-d_0-d_2 
+delete: On-d_0-d_3 Clear-d_2 
+Name: Move-d_0-d_3-p_0 
+pre: On-d_0-d_3 Clear-d_0 Clear-p_0 
+add: Clear-d_3 On-d_0-p_0 
+delete: On-d_0-d_3 Clear-p_0 
+Name: Move-d_0-d_3-p_1 
+pre: On-d_0-d_3 Clear-d_0 Clear-p_1 
+add: Clear-d_3 On-d_0-p_1 
+delete: On-d_0-d_3 Clear-p_1 
+Name: Move-d_0-d_3-p_2 
+pre: On-d_0-d_3 Clear-d_0 Clear-p_2 
+add: Clear-d_3 On-d_0-p_2 
+delete: On-d_0-d_3 Clear-p_2 
+Name: Move-d_0-p_0-d_1 
+pre: On-d_0-p_0 Clear-d_0 Clear-d_1 
+add: Clear-p_0 On-d_0-d_1 
+delete: On-d_0-p_0 Clear-d_1 
+Name: Move-d_0-p_0-d_2 
+pre: On-d_0-p_0 Clear-d_0 Clear-d_2 
+add: Clear-p_0 On-d_0-d_2 
+delete: On-d_0-p_0 Clear-d_2 
+Name: Move-d_0-p_0-d_3 
+pre: On-d_0-p_0 Clear-d_0 Clear-d_3 
+add: Clear-p_0 On-d_0-d_3 
+delete: On-d_0-p_0 Clear-d_3 
+Name: Move-d_0-p_0-p_1 
+pre: On-d_0-p_0 Clear-d_0 Clear-p_1 
+add: Clear-p_0 On-d_0-p_1 
+delete: On-d_0-p_0 Clear-p_1 
+Name: Move-d_0-p_0-p_2 
+pre: On-d_0-p_0 Clear-d_0 Clear-p_2 
+add: Clear-p_0 On-d_0-p_2 
+delete: On-d_0-p_0 Clear-p_2 
+Name: Move-d_0-p_1-d_1 
+pre: On-d_0-p_1 Clear-d_0 Clear-d_1 
+add: Clear-p_1 On-d_0-d_1 
+delete: On-d_0-p_1 Clear-d_1 
+Name: Move-d_0-p_1-d_2 
+pre: On-d_0-p_1 Clear-d_0 Clear-d_2 
+add: Clear-p_1 On-d_0-d_2 
+delete: On-d_0-p_1 Clear-d_2 
+Name: Move-d_0-p_1-d_3 
+pre: On-d_0-p_1 Clear-d_0 Clear-d_3 
+add: Clear-p_1 On-d_0-d_3 
+delete: On-d_0-p_1 Clear-d_3 
+Name: Move-d_0-p_1-p_0 
+pre: On-d_0-p_1 Clear-d_0 Clear-p_0 
+add: Clear-p_1 On-d_0-p_0 
+delete: On-d_0-p_1 Clear-p_0 
+Name: Move-d_0-p_1-p_2 
+pre: On-d_0-p_1 Clear-d_0 Clear-p_2 
+add: Clear-p_1 On-d_0-p_2 
+delete: On-d_0-p_1 Clear-p_2 
+Name: Move-d_0-p_2-d_1 
+pre: On-d_0-p_2 Clear-d_0 Clear-d_1 
+add: Clear-p_2 On-d_0-d_1 
+delete: On-d_0-p_2 Clear-d_1 
+Name: Move-d_0-p_2-d_2 
+pre: On-d_0-p_2 Clear-d_0 Clear-d_2 
+add: Clear-p_2 On-d_0-d_2 
+delete: On-d_0-p_2 Clear-d_2 
+Name: Move-d_0-p_2-d_3 
+pre: On-d_0-p_2 Clear-d_0 Clear-d_3 
+add: Clear-p_2 On-d_0-d_3 
+delete: On-d_0-p_2 Clear-d_3 
+Name: Move-d_0-p_2-p_0 
+pre: On-d_0-p_2 Clear-d_0 Clear-p_0 
+add: Clear-p_2 On-d_0-p_0 
+delete: On-d_0-p_2 Clear-p_0 
+Name: Move-d_0-p_2-p_1 
+pre: On-d_0-p_2 Clear-d_0 Clear-p_1 
+add: Clear-p_2 On-d_0-p_1 
+delete: On-d_0-p_2 Clear-p_1 
+Name: Move-d_1-d_2-d_3 
+pre: On-d_1-d_2 Clear-d_1 Clear-d_3 
+add: Clear-d_2 On-d_1-d_3 
+delete: On-d_1-d_2 Clear-d_3 
+Name: Move-d_1-d_2-p_0 
+pre: On-d_1-d_2 Clear-d_1 Clear-p_0 
+add: Clear-d_2 On-d_1-p_0 
+delete: On-d_1-d_2 Clear-p_0 
+Name: Move-d_1-d_2-p_1 
+pre: On-d_1-d_2 Clear-d_1 Clear-p_1 
+add: Clear-d_2 On-d_1-p_1 
+delete: On-d_1-d_2 Clear-p_1 
+Name: Move-d_1-d_2-p_2 
+pre: On-d_1-d_2 Clear-d_1 Clear-p_2 
+add: Clear-d_2 On-d_1-p_2 
+delete: On-d_1-d_2 Clear-p_2 
+Name: Move-d_1-d_3-d_2 
+pre: On-d_1-d_3 Clear-d_1 Clear-d_2 
+add: Clear-d_3 On-d_1-d_2 
+delete: On-d_1-d_3 Clear-d_2 
+Name: Move-d_1-d_3-p_0 
+pre: On-d_1-d_3 Clear-d_1 Clear-p_0 
+add: Clear-d_3 On-d_1-p_0 
+delete: On-d_1-d_3 Clear-p_0 
+Name: Move-d_1-d_3-p_1 
+pre: On-d_1-d_3 Clear-d_1 Clear-p_1 
+add: Clear-d_3 On-d_1-p_1 
+delete: On-d_1-d_3 Clear-p_1 
+Name: Move-d_1-d_3-p_2 
+pre: On-d_1-d_3 Clear-d_1 Clear-p_2 
+add: Clear-d_3 On-d_1-p_2 
+delete: On-d_1-d_3 Clear-p_2 
+Name: Move-d_1-p_0-d_2 
+pre: On-d_1-p_0 Clear-d_1 Clear-d_2 
+add: Clear-p_0 On-d_1-d_2 
+delete: On-d_1-p_0 Clear-d_2 
+Name: Move-d_1-p_0-d_3 
+pre: On-d_1-p_0 Clear-d_1 Clear-d_3 
+add: Clear-p_0 On-d_1-d_3 
+delete: On-d_1-p_0 Clear-d_3 
+Name: Move-d_1-p_0-p_1 
+pre: On-d_1-p_0 Clear-d_1 Clear-p_1 
+add: Clear-p_0 On-d_1-p_1 
+delete: On-d_1-p_0 Clear-p_1 
+Name: Move-d_1-p_0-p_2 
+pre: On-d_1-p_0 Clear-d_1 Clear-p_2 
+add: Clear-p_0 On-d_1-p_2 
+delete: On-d_1-p_0 Clear-p_2 
+Name: Move-d_1-p_1-d_2 
+pre: On-d_1-p_1 Clear-d_1 Clear-d_2 
+add: Clear-p_1 On-d_1-d_2 
+delete: On-d_1-p_1 Clear-d_2 
+Name: Move-d_1-p_1-d_3 
+pre: On-d_1-p_1 Clear-d_1 Clear-d_3 
+add: Clear-p_1 On-d_1-d_3 
+delete: On-d_1-p_1 Clear-d_3 
+Name: Move-d_1-p_1-p_0 
+pre: On-d_1-p_1 Clear-d_1 Clear-p_0 
+add: Clear-p_1 On-d_1-p_0 
+delete: On-d_1-p_1 Clear-p_0 
+Name: Move-d_1-p_1-p_2 
+pre: On-d_1-p_1 Clear-d_1 Clear-p_2 
+add: Clear-p_1 On-d_1-p_2 
+delete: On-d_1-p_1 Clear-p_2 
+Name: Move-d_1-p_2-d_2 
+pre: On-d_1-p_2 Clear-d_1 Clear-d_2 
+add: Clear-p_2 On-d_1-d_2 
+delete: On-d_1-p_2 Clear-d_2 
+Name: Move-d_1-p_2-d_3 
+pre: On-d_1-p_2 Clear-d_1 Clear-d_3 
+add: Clear-p_2 On-d_1-d_3 
+delete: On-d_1-p_2 Clear-d_3 
+Name: Move-d_1-p_2-p_0 
+pre: On-d_1-p_2 Clear-d_1 Clear-p_0 
+add: Clear-p_2 On-d_1-p_0 
+delete: On-d_1-p_2 Clear-p_0 
+Name: Move-d_1-p_2-p_1 
+pre: On-d_1-p_2 Clear-d_1 Clear-p_1 
+add: Clear-p_2 On-d_1-p_1 
+delete: On-d_1-p_2 Clear-p_1 
+Name: Move-d_2-d_3-p_0 
+pre: On-d_2-d_3 Clear-d_2 Clear-p_0 
+add: Clear-d_3 On-d_2-p_0 
+delete: On-d_2-d_3 Clear-p_0 
+Name: Move-d_2-d_3-p_1 
+pre: On-d_2-d_3 Clear-d_2 Clear-p_1 
+add: Clear-d_3 On-d_2-p_1 
+delete: On-d_2-d_3 Clear-p_1 
+Name: Move-d_2-d_3-p_2 
+pre: On-d_2-d_3 Clear-d_2 Clear-p_2 
+add: Clear-d_3 On-d_2-p_2 
+delete: On-d_2-d_3 Clear-p_2 
+Name: Move-d_2-p_0-d_3 
+pre: On-d_2-p_0 Clear-d_2 Clear-d_3 
+add: Clear-p_0 On-d_2-d_3 
+delete: On-d_2-p_0 Clear-d_3 
+Name: Move-d_2-p_0-p_1 
+pre: On-d_2-p_0 Clear-d_2 Clear-p_1 
+add: Clear-p_0 On-d_2-p_1 
+delete: On-d_2-p_0 Clear-p_1 
+Name: Move-d_2-p_0-p_2 
+pre: On-d_2-p_0 Clear-d_2 Clear-p_2 
+add: Clear-p_0 On-d_2-p_2 
+delete: On-d_2-p_0 Clear-p_2 
+Name: Move-d_2-p_1-d_3 
+pre: On-d_2-p_1 Clear-d_2 Clear-d_3 
+add: Clear-p_1 On-d_2-d_3 
+delete: On-d_2-p_1 Clear-d_3 
+Name: Move-d_2-p_1-p_0 
+pre: On-d_2-p_1 Clear-d_2 Clear-p_0 
+add: Clear-p_1 On-d_2-p_0 
+delete: On-d_2-p_1 Clear-p_0 
+Name: Move-d_2-p_1-p_2 
+pre: On-d_2-p_1 Clear-d_2 Clear-p_2 
+add: Clear-p_1 On-d_2-p_2 
+delete: On-d_2-p_1 Clear-p_2 
+Name: Move-d_2-p_2-d_3 
+pre: On-d_2-p_2 Clear-d_2 Clear-d_3 
+add: Clear-p_2 On-d_2-d_3 
+delete: On-d_2-p_2 Clear-d_3 
+Name: Move-d_2-p_2-p_0 
+pre: On-d_2-p_2 Clear-d_2 Clear-p_0 
+add: Clear-p_2 On-d_2-p_0 
+delete: On-d_2-p_2 Clear-p_0 
+Name: Move-d_2-p_2-p_1 
+pre: On-d_2-p_2 Clear-d_2 Clear-p_1 
+add: Clear-p_2 On-d_2-p_1 
+delete: On-d_2-p_2 Clear-p_1 
+Name: Move-d_3-p_0-p_1 
+pre: On-d_3-p_0 Clear-d_3 Clear-p_1 
+add: Clear-p_0 On-d_3-p_1 
+delete: On-d_3-p_0 Clear-p_1 
+Name: Move-d_3-p_0-p_2 
+pre: On-d_3-p_0 Clear-d_3 Clear-p_2 
+add: Clear-p_0 On-d_3-p_2 
+delete: On-d_3-p_0 Clear-p_2 
+Name: Move-d_3-p_1-p_0 
+pre: On-d_3-p_1 Clear-d_3 Clear-p_0 
+add: Clear-p_1 On-d_3-p_0 
+delete: On-d_3-p_1 Clear-p_0 
+Name: Move-d_3-p_1-p_2 
+pre: On-d_3-p_1 Clear-d_3 Clear-p_2 
+add: Clear-p_1 On-d_3-p_2 
+delete: On-d_3-p_1 Clear-p_2 
+Name: Move-d_3-p_2-p_0 
+pre: On-d_3-p_2 Clear-d_3 Clear-p_0 
+add: Clear-p_2 On-d_3-p_0 
+delete: On-d_3-p_2 Clear-p_0 
+Name: Move-d_3-p_2-p_1 
+pre: On-d_3-p_2 Clear-d_3 Clear-p_1 
+add: Clear-p_2 On-d_3-p_1 
+delete: On-d_3-p_2 Clear-p_1 

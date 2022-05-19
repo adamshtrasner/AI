@@ -1,0 +1,155 @@
+Propositions:
+d_0-ON-p_0 d_0-ON-p_1 d_0-ON-p_2 d_1-ON-p_0 d_1-ON-p_1 d_1-ON-p_2 d_2-ON-p_0 d_2-ON-p_1 d_2-ON-p_2 d_0-ON-d_1 d_0-ON-d_2 d_1-ON-d_2 top_d_0 top_d_1 top_d_2 avail_p_0 avail_p_1 avail_p_2 
+Actions:
+Name: MOVE_d_0_d_1-d_2 
+pre: top_d_0 top_d_2 d_0-ON-d_1 
+add: top_d_1 d_0-ON-d_2 
+delete: top_d_2 d_0-ON-d_1 
+Name: MOVE_d_0_d_1-p_0 
+pre: top_d_0 avail_p_0 d_0-ON-d_1 
+add: top_d_1 d_0-ON-p_0 
+delete: avail_p_0 d_0-ON-d_1 
+Name: MOVE_d_0_d_1-p_1 
+pre: top_d_0 avail_p_1 d_0-ON-d_1 
+add: top_d_1 d_0-ON-p_1 
+delete: avail_p_1 d_0-ON-d_1 
+Name: MOVE_d_0_d_1-p_2 
+pre: top_d_0 avail_p_2 d_0-ON-d_1 
+add: top_d_1 d_0-ON-p_2 
+delete: avail_p_2 d_0-ON-d_1 
+Name: MOVE_d_0_d_2-d_1 
+pre: top_d_0 top_d_1 d_0-ON-d_2 
+add: top_d_2 d_0-ON-d_1 
+delete: top_d_1 d_0-ON-d_2 
+Name: MOVE_d_0_d_2-p_0 
+pre: top_d_0 avail_p_0 d_0-ON-d_2 
+add: top_d_2 d_0-ON-p_0 
+delete: avail_p_0 d_0-ON-d_2 
+Name: MOVE_d_0_d_2-p_1 
+pre: top_d_0 avail_p_1 d_0-ON-d_2 
+add: top_d_2 d_0-ON-p_1 
+delete: avail_p_1 d_0-ON-d_2 
+Name: MOVE_d_0_d_2-p_2 
+pre: top_d_0 avail_p_2 d_0-ON-d_2 
+add: top_d_2 d_0-ON-p_2 
+delete: avail_p_2 d_0-ON-d_2 
+Name: MOVE_d_0_p_0-d_1 
+pre: top_d_0 top_d_1 d_0-ON-p_0 
+add: avail_p_0 d_0-ON-d_1 
+delete: top_d_1 d_0-ON-p_0 
+Name: MOVE_d_0_p_0-d_2 
+pre: top_d_0 top_d_2 d_0-ON-p_0 
+add: avail_p_0 d_0-ON-d_2 
+delete: top_d_2 d_0-ON-p_0 
+Name: MOVE_d_0_p_0-p_1 
+pre: top_d_0 avail_p_1 d_0-ON-p_0 
+add: avail_p_0 d_0-ON-p_1 
+delete: avail_p_1 d_0-ON-p_0 
+Name: MOVE_d_0_p_0-p_2 
+pre: top_d_0 avail_p_2 d_0-ON-p_0 
+add: avail_p_0 d_0-ON-p_2 
+delete: avail_p_2 d_0-ON-p_0 
+Name: MOVE_d_0_p_1-d_1 
+pre: top_d_0 top_d_1 d_0-ON-p_1 
+add: avail_p_1 d_0-ON-d_1 
+delete: top_d_1 d_0-ON-p_1 
+Name: MOVE_d_0_p_1-d_2 
+pre: top_d_0 top_d_2 d_0-ON-p_1 
+add: avail_p_1 d_0-ON-d_2 
+delete: top_d_2 d_0-ON-p_1 
+Name: MOVE_d_0_p_1-p_0 
+pre: top_d_0 avail_p_0 d_0-ON-p_1 
+add: avail_p_1 d_0-ON-p_0 
+delete: avail_p_0 d_0-ON-p_1 
+Name: MOVE_d_0_p_1-p_2 
+pre: top_d_0 avail_p_2 d_0-ON-p_1 
+add: avail_p_1 d_0-ON-p_2 
+delete: avail_p_2 d_0-ON-p_1 
+Name: MOVE_d_0_p_2-d_1 
+pre: top_d_0 top_d_1 d_0-ON-p_2 
+add: avail_p_2 d_0-ON-d_1 
+delete: top_d_1 d_0-ON-p_2 
+Name: MOVE_d_0_p_2-d_2 
+pre: top_d_0 top_d_2 d_0-ON-p_2 
+add: avail_p_2 d_0-ON-d_2 
+delete: top_d_2 d_0-ON-p_2 
+Name: MOVE_d_0_p_2-p_0 
+pre: top_d_0 avail_p_0 d_0-ON-p_2 
+add: avail_p_2 d_0-ON-p_0 
+delete: avail_p_0 d_0-ON-p_2 
+Name: MOVE_d_0_p_2-p_1 
+pre: top_d_0 avail_p_1 d_0-ON-p_2 
+add: avail_p_2 d_0-ON-p_1 
+delete: avail_p_1 d_0-ON-p_2 
+Name: MOVE_d_1_d_2-p_0 
+pre: top_d_1 avail_p_0 d_1-ON-d_2 
+add: top_d_2 d_1-ON-p_0 
+delete: avail_p_0 d_1-ON-d_2 
+Name: MOVE_d_1_d_2-p_1 
+pre: top_d_1 avail_p_1 d_1-ON-d_2 
+add: top_d_2 d_1-ON-p_1 
+delete: avail_p_1 d_1-ON-d_2 
+Name: MOVE_d_1_d_2-p_2 
+pre: top_d_1 avail_p_2 d_1-ON-d_2 
+add: top_d_2 d_1-ON-p_2 
+delete: avail_p_2 d_1-ON-d_2 
+Name: MOVE_d_1_p_0-d_2 
+pre: top_d_1 top_d_2 d_1-ON-p_0 
+add: avail_p_0 d_1-ON-d_2 
+delete: top_d_2 d_1-ON-p_0 
+Name: MOVE_d_1_p_0-p_1 
+pre: top_d_1 avail_p_1 d_1-ON-p_0 
+add: avail_p_0 d_1-ON-p_1 
+delete: avail_p_1 d_1-ON-p_0 
+Name: MOVE_d_1_p_0-p_2 
+pre: top_d_1 avail_p_2 d_1-ON-p_0 
+add: avail_p_0 d_1-ON-p_2 
+delete: avail_p_2 d_1-ON-p_0 
+Name: MOVE_d_1_p_1-d_2 
+pre: top_d_1 top_d_2 d_1-ON-p_1 
+add: avail_p_1 d_1-ON-d_2 
+delete: top_d_2 d_1-ON-p_1 
+Name: MOVE_d_1_p_1-p_0 
+pre: top_d_1 avail_p_0 d_1-ON-p_1 
+add: avail_p_1 d_1-ON-p_0 
+delete: avail_p_0 d_1-ON-p_1 
+Name: MOVE_d_1_p_1-p_2 
+pre: top_d_1 avail_p_2 d_1-ON-p_1 
+add: avail_p_1 d_1-ON-p_2 
+delete: avail_p_2 d_1-ON-p_1 
+Name: MOVE_d_1_p_2-d_2 
+pre: top_d_1 top_d_2 d_1-ON-p_2 
+add: avail_p_2 d_1-ON-d_2 
+delete: top_d_2 d_1-ON-p_2 
+Name: MOVE_d_1_p_2-p_0 
+pre: top_d_1 avail_p_0 d_1-ON-p_2 
+add: avail_p_2 d_1-ON-p_0 
+delete: avail_p_0 d_1-ON-p_2 
+Name: MOVE_d_1_p_2-p_1 
+pre: top_d_1 avail_p_1 d_1-ON-p_2 
+add: avail_p_2 d_1-ON-p_1 
+delete: avail_p_1 d_1-ON-p_2 
+Name: MOVE_d_2_p_0-p_1 
+pre: top_d_2 avail_p_1 d_2-ON-p_0 
+add: avail_p_0 d_2-ON-p_1 
+delete: avail_p_1 d_2-ON-p_0 
+Name: MOVE_d_2_p_0-p_2 
+pre: top_d_2 avail_p_2 d_2-ON-p_0 
+add: avail_p_0 d_2-ON-p_2 
+delete: avail_p_2 d_2-ON-p_0 
+Name: MOVE_d_2_p_1-p_0 
+pre: top_d_2 avail_p_0 d_2-ON-p_1 
+add: avail_p_1 d_2-ON-p_0 
+delete: avail_p_0 d_2-ON-p_1 
+Name: MOVE_d_2_p_1-p_2 
+pre: top_d_2 avail_p_2 d_2-ON-p_1 
+add: avail_p_1 d_2-ON-p_2 
+delete: avail_p_2 d_2-ON-p_1 
+Name: MOVE_d_2_p_2-p_0 
+pre: top_d_2 avail_p_0 d_2-ON-p_2 
+add: avail_p_2 d_2-ON-p_0 
+delete: avail_p_0 d_2-ON-p_2 
+Name: MOVE_d_2_p_2-p_1 
+pre: top_d_2 avail_p_1 d_2-ON-p_2 
+add: avail_p_2 d_2-ON-p_1 
+delete: avail_p_1 d_2-ON-p_2 
