@@ -49,13 +49,15 @@ class ReflexAgent(Agent):
         # Useful information you can extract from a GameState (game_state.py)
 
         successor_game_state = current_game_state.generate_successor(action=action)
-        board = successor_game_state.board
-        max_tile = successor_game_state.max_tile
-        score = successor_game_state.score
-
         "*** YOUR CODE HERE ***"
-        score += num_of_empty_tiles(successor_game_state) ** 2
-        return score
+
+        # Taking max score out of the scores of the successors of the current game state's successor.
+        legal_actions = successor_game_state.get_agent_legal_actions()
+        if legal_actions:
+            successors_of_successors_scores = [successor_game_state.generate_successor(action=a).score
+                                               for a in legal_actions]
+            return max(successors_of_successors_scores)
+        return 0
 
 
 def score_evaluation_function(current_game_state):
@@ -113,28 +115,27 @@ class MinmaxAgent(MultiAgentSearchAgent):
             Returns the successor game state after an agent takes an action
         """
         legal_actions = game_state.get_legal_actions(0)
-        if not legal_actions:
-            return Action.STOP
         actions = list()
+
         for action in legal_actions:
             successor = game_state.generate_successor(0, action)
-            actions.append((self.minmax_algorithm(successor, self.depth - 1, True), action))
+            actions.append((self.minmax_algorithm(successor, self.depth, 1), action))
+
         return max(actions, key=lambda t: t[0])[1]
 
-    def minmax_algorithm(self, game_state, depth, is_max_node):
-        agent_index = int(is_max_node)
-        legal_actions = game_state.get_legal_actions(agent_index)
-        is_terminal_node = not legal_actions
+    def minmax_algorithm(self, game_state, depth, player_index):
+        legal_actions = game_state.get_legal_actions(player_index)
+        is_terminal_node = game_state.done
 
         if depth == 0 or is_terminal_node:
             return self.evaluation_function(game_state)
 
-        successors = [game_state.generate_successor(agent_index, action) for action in legal_actions]
+        successors = [game_state.generate_successor(player_index, action) for action in legal_actions]
 
-        if is_max_node:
-            return max(self.minmax_algorithm(s, depth, False) for s in successors)
+        if player_index == 0:
+            return max(self.minmax_algorithm(s, depth, 1) for s in successors)
         else:
-            return min(self.minmax_algorithm(s, depth - 1, True) for s in successors)
+            return min(self.minmax_algorithm(s, depth - 1, 0) for s in successors)
 
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
@@ -147,33 +148,32 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         Returns the minimax action using self.depth and self.evaluationFunction
         """
         legal_actions = game_state.get_legal_actions(0)
-        if not legal_actions:
-            return Action.STOP
+
         actions = list()
         for action in legal_actions:
             successor = game_state.generate_successor(0, action)
-            actions.append((self.alpha_beta_pruning(successor, self.depth - 1, -math.inf, math.inf, True), action))
+            actions.append((self.alpha_beta_pruning(successor, self.depth, -math.inf, math.inf, 1), action))
+
         return max(actions, key=lambda t: t[0])[1]
 
-    def alpha_beta_pruning(self, game_state, depth, alpha, beta, is_max_node):
-        agent_index = int(is_max_node)
-        legal_actions = game_state.get_legal_actions(agent_index)
-        is_terminal_node = not legal_actions
+    def alpha_beta_pruning(self, game_state, depth, alpha, beta, player_index):
+        legal_actions = game_state.get_legal_actions(player_index)
+        is_terminal_node = game_state.done
 
         if depth == 0 or is_terminal_node:
             return self.evaluation_function(game_state)
 
-        successors = [game_state.generate_successor(agent_index, action) for action in legal_actions]
+        successors = [game_state.generate_successor(player_index, action) for action in legal_actions]
 
-        if is_max_node:
+        if player_index == 0:
             for s in successors:
-                alpha = max(alpha, self.alpha_beta_pruning(s, depth, alpha, beta, False))
+                alpha = max(alpha, self.alpha_beta_pruning(s, depth, alpha, beta, 1))
                 if beta <= alpha:
                     break
             return alpha
         else:
             for s in successors:
-                beta = min(beta, self.alpha_beta_pruning(s, depth - 1, alpha, beta, True))
+                beta = min(beta, self.alpha_beta_pruning(s, depth - 1, alpha, beta, 0))
                 if beta <= alpha:
                     break
             return beta
@@ -192,29 +192,27 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         legal moves.
         """
         legal_actions = game_state.get_legal_actions(0)
-        if not legal_actions:
-            return Action.STOP
+
         actions = list()
         for action in legal_actions:
             successor = game_state.generate_successor(0, action)
-            actions.append((self.expectimax_algorithm(successor, self.depth - 1, True), action))
+            actions.append((self.expectimax_algorithm(successor, self.depth, 1), action))
         return max(actions, key=lambda t: t[0])[1]
 
-    def expectimax_algorithm(self, game_state, depth, is_max_node):
-        agent_index = int(is_max_node)
-        legal_actions = game_state.get_legal_actions(agent_index)
-        is_terminal_node = not legal_actions
+    def expectimax_algorithm(self, game_state, depth, player_index):
+        legal_actions = game_state.get_legal_actions(player_index)
+        is_terminal_node = game_state.done
 
         if depth == 0 or is_terminal_node:
             return self.evaluation_function(game_state)
 
-        successors = [game_state.generate_successor(agent_index, action) for action in legal_actions]
+        successors = [game_state.generate_successor(player_index, action) for action in legal_actions]
         n = len(successors)
 
-        if is_max_node:
-            return max(self.expectimax_algorithm(s, depth, False) for s in successors)
+        if player_index == 0:
+            return max(self.expectimax_algorithm(s, depth, 1) for s in successors)
         else:
-            return sum([self.expectimax_algorithm(s, depth - 1, True) * (1 / n) for s in successors])
+            return (1 / n) * sum([self.expectimax_algorithm(s, depth - 1, 0) for s in successors])
 
 
 def better_evaluation_function(current_game_state):
@@ -222,30 +220,20 @@ def better_evaluation_function(current_game_state):
     Your extreme 2048 evaluation function (question 5).
 
     DESCRIPTION: We used a sum of 2 evaluation functions minus penalties:
-                 (1) weighted sum of board - We used a score matrix, giving each place in the board
+                 (1) number of empty tiles - The more empty tiles you have the more you're far away from losing.
+                 Therefore, we scored each state with this number - squared.
+                 (2) weighted sum of board - We used a score matrix, giving each place in the board
                  a score according to the board's monotonicity: We found out after much research and
                  game plays that keeping higher tiles more clustered to the corner will result in a
                  better score, and so we used a snake shaped like matrix, giving higher scores as u get close
                  to the top left corner, and also it's reasonable to put tiles with different values in a
                  monotonic order so that they could merge consecutively, and so the reasoning behind the snake
                  shaped score matrix.
-                 (2) uniformity evaluation - We scored states based on the sum of all numbers of tiles of the
-                 same value, powered to 3 (after examining we thought it suits best).
-                 This way, The chosen algorithm will choose moves that produce the most tiles of the same value.
-
-                 penalty:
-                 (1) total differences - The idea behind this is smoothness. In order for both tiles to merge
-                 they need to have the same value, so we penalize states that that difference is high,
-                 and the penalty for those that have low difference is low.
-                 (2) number of empty tiles - The more empty tiles you have the more you're far away from losing,
-                 and vice versa. Therefore, we penalized states that have less empty tiles. We powered the penalty
-                 by 6, also after many experiments, we found that that power gives the best performance.
     """
     board = current_game_state.board
-    empty_tiles_penalty = 16 - num_of_empty_tiles(current_game_state)
-    total_differences_penalty = total_differences(board)
-    return 0.5*(weighted_sum_of_board(board) + uniformity_evaluation(board)) - total_differences_penalty \
-           - empty_tiles_penalty ** 6
+    empty_tiles = num_of_empty_tiles(current_game_state)
+
+    return empty_tiles ** 2 + weighted_sum_of_board(board)
 
 
 # Abbreviation
@@ -262,30 +250,9 @@ def num_of_empty_tiles(game_state):
     return len(game_state.get_empty_tiles()[0])
 
 
-def total_differences(board):
-    """
-    Sum of differences between each adjacent tile in each row and column - heuristic.
-    """
-    sum = 0
-    num_rows = len(board)
-    num_cols = len(board.T)
-    for i in range(num_rows):
-        sum += np.sum(np.abs(np.ediff1d(board[i])))
-    for j in range(num_cols):
-        sum += np.sum(np.abs(np.ediff1d(board.T[j])))
-    return sum
-
-
 SNAKE_MATRIX = np.array([[6, 5, 4, 3], [5, 4, 3, 2], [4, 3, 2, 1], [3, 2, 1, 0]]) ** 2
 
 
 def weighted_sum_of_board(board):
     return np.sum(SNAKE_MATRIX * board)
-
-
-def uniformity_evaluation(board):
-    board_as_list = np.ndarray.tolist(np.ndarray.flatten(board))
-    unique = set(board_as_list)
-    eval = np.array(list(unique)) ** 3
-    return np.sum(eval)
 # --------------------------------------------------
