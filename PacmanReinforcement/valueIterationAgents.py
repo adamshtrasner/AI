@@ -75,6 +75,7 @@ class ValueIterationAgent(ValueEstimationAgent):
         terminal state, you should return None.
         """
         "*** YOUR CODE HERE ***"
+        # Creating actions dict which maps an action to q-value(state, action)
         actions = util.Counter()
         possible_actions = self.mdp.getPossibleActions(state)
         if not possible_actions:

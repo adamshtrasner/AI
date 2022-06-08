@@ -12,6 +12,7 @@ from featureExtractors import *
 
 import random,util,math
 
+
 class QLearningAgent(ReinforcementAgent):
     """
       Q-Learning Agent
@@ -62,13 +63,7 @@ class QLearningAgent(ReinforcementAgent):
 
         if not legal_actions:
             return 0.0
-
-        max_q_val = - math.inf
-        for action in legal_actions:
-            q_val = self.getQValue(state, action)
-            if q_val > max_q_val:
-                max_q_val = q_val
-        return max_q_val
+        return max(self.getQValue(state, action) for action in legal_actions)
 
     def getPolicy(self, state):
         """
@@ -173,6 +168,7 @@ class ApproximateQAgent(PacmanQAgent):
 
     # You might want to initialize weights here.
     "*** YOUR CODE HERE ***"
+    self.w = util.Counter()
 
   def getQValue(self, state, action):
     """
@@ -180,14 +176,19 @@ class ApproximateQAgent(PacmanQAgent):
       where * is the dotProduct operator
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    features = self.featExtractor.getFeatures(state, action)
+    return sum(features[feature] * self.w[feature]
+               for feature in features)
 
   def update(self, state, action, nextState, reward):
     """
        Should update your weights based on transition
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    correction = reward + self.discount*self.getValue(nextState) - self.getQValue(state, action)
+    features = self.featExtractor.getFeatures(state, action)
+    for feature in features:
+        self.w[feature] += self.alpha * correction * features[feature]
 
   def final(self, state):
     "Called at the end of each game."
